@@ -88,7 +88,7 @@
       function drawPaddle() {
           ctx.beginPath();
           ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-          ctx.fillStyle = "#0095DD";
+          ctx.fillStyle = "red";
           ctx.fill();
           ctx.closePath();
       }
@@ -102,7 +102,11 @@
               bricks[c][r].y = brickY;
               ctx.beginPath();
               ctx.rect(brickX, brickY, brickWidth, brickHeight);
-              ctx.fillStyle = "#0095DD";
+              if ((r + c) % 2 === 0) {
+                ctx.fillStyle = "orange";
+              } else {
+                ctx.fillStyle = "green";
+              }
               ctx.fill();
               ctx.closePath();
             }
@@ -126,8 +130,7 @@
                 score++;
                 if (score === brickRowCount * brickColumnCount) {
                   alert("YOU WIN, CONGRATULATIONS! YOUR SCORE: " + score);
-                  document.location.reload();
-                  //clearInterval(interval);
+                  document.location.reload();                  
                 }
               }
             }
@@ -173,7 +176,6 @@
                 if (!lives) {
                   alert("GAME OVER");
                   document.location.reload();
-                  //clearInterval(interval);
                 } else {
                   x = canvas.width / 2;
                   y = canvas.height - 30;
@@ -196,7 +198,6 @@
         requestAnimationFrame(draw);
       }
 
-      //const interval = setInterval(draw, 10);
       draw();
     </script>
   </body>
