@@ -16,7 +16,7 @@
     </style>
   </head>
   <body>
-    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <canvas id="myCanvas" width="545" height="320"></canvas>
 
     <script>
       let canvas = document.getElementById("myCanvas");
@@ -31,13 +31,14 @@
       let paddleX = (canvas.width-paddleWidth)/2;
       let rightPressed = false;
       let leftPressed = false;
-      let brickRowCount = 3;
-      let brickColumnCount = 5;
+      let brickRowCount = 5;
+      let brickColumnCount = 6;
       let brickWidth = 75;
       let brickHeight = 20;
       let brickPadding = 10;
       let brickOffsetTop = 30;
-      let brickOffsetLeft = 30;
+      let brickOffsetLeft = 20;
+      
       let score = 0;
       let lives = 3;
 
@@ -45,7 +46,8 @@
       for(let c = 0; c < brickColumnCount; c++) {
           bricks[c] = [];
           for(let r = 0; r < brickRowCount; r++) {
-              bricks[c][r] = { x: 0, y: 0, status: 1 };
+              let points = (r + c) % 2 === 0 ? 3 : 2;
+              bricks[c][r] = { x: 0, y: 0, status: 1, points: points };
           }
       }
 
@@ -140,18 +142,27 @@
 
       function drawScore() {
         ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
+        ctx.fillStyle = "red";
         ctx.fillText(`Score: ${score}`, 8, 20);
       }
 
       function drawLives() {
         ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
+        ctx.fillStyle = "red";
         ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+      }
+
+      function drawBackground() {
+        let background = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        background.addColorStop(0, 'blue');
+        background.addColorStop(1, 'lightblue');
+        ctx.fillStyle = background;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
       function draw() {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawBackground()
           drawBricks();
           drawBall();
           drawPaddle();
