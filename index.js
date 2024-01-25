@@ -1,15 +1,24 @@
 /* eslint-disable import/extensions */
 import Ball from './Ball.js';
 import Brick from './Brick.js';
+import Paddle from './Paddle.js';
+import Background from './Background.js';
 
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
+
+const background = new Background('green');
+
 const ball = new Ball(10, '#0095DD', canvas.width / 2, canvas.height - 30, 2, -2);
-let rightPressed = false;
-let leftPressed = false;
+
 const paddleHeight = 10;
 const paddleWidth = 75;
-let paddleX = (canvas.width - paddleWidth) / 2;
+const paddleXStart = (canvas.width - paddleWidth) / 2;
+const paddle = new Paddle(paddleXStart, canvas.height - paddleHeight, 'red', paddleWidth, paddleHeight); // Create a Paddle instance
+
+let rightPressed = false;
+let leftPressed = false;
+
 const brickRowCount = 5;
 const brickColumnCount = 6;
 const brickWidth = 75;
@@ -17,6 +26,7 @@ const brickHeight = 20;
 const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 20;
+
 let score = 0;
 let lives = 3;
 
@@ -53,23 +63,7 @@ function keyUpHandler(e) {
 function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - paddleWidth / 2;
-  }
-}
-
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = 'red';
-  ctx.fill();
-  ctx.closePath();
-}
-
-function drawBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      bricks[c][r].render(ctx);
-    }
+    paddle.x = relativeX - paddleWidth / 2;
   }
 }
 
@@ -104,11 +98,22 @@ function drawLives() {
   ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
 }
 
+function drawBricks() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      if (bricks[c][r].status === 1) {
+        bricks[c][r].render(ctx);
+      }
+    }
+  }
+}
+
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  background.draw(ctx, canvas.width, canvas.height);
+  // ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
   ball.render(ctx);
-  drawPaddle();
+  paddle.draw(ctx);
   drawScore();
   drawLives();
   collisionDetection();
@@ -116,10 +121,11 @@ function draw() {
   if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
     ball.dx = -ball.dx;
   }
+
   if (ball.y + ball.dy < ball.radius) {
     ball.dy = -ball.dy;
   } else if (ball.y + ball.dy > canvas.height - ball.radius) {
-    if (ball.x > paddleX && ball.x < paddleX + paddleWidth) {
+    if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
       ball.dy = -ball.dy;
     } else {
       lives--;
@@ -131,15 +137,15 @@ function draw() {
         ball.y = canvas.height - 30;
         ball.dx = 2;
         ball.dy = -2;
-        paddleX = (canvas.width - paddleWidth) / 2;
+        paddle.x = (canvas.width - paddleWidth) / 2;
       }
     }
   }
 
-  if (rightPressed && paddleX < canvas.width - paddleWidth) {
-    paddleX += 7;
-  } else if (leftPressed && paddleX > 0) {
-    paddleX -= 7;
+  if (rightPressed && paddle.x < canvas.width - paddle.width) {
+    paddle.x += 7;
+  } else if (leftPressed && paddle.x > 0) {
+    paddle.x -= 7;
   }
 
   ball.move();
