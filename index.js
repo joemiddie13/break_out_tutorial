@@ -1,9 +1,11 @@
+/* eslint-disable no-alert */
 /* eslint-disable import/extensions */
 import Ball from './Ball.js';
 import Brick from './Brick.js';
 import Paddle from './Paddle.js';
 import Background from './Background.js';
 import Score from './Score.js';
+import Lives from './Lives.js';
 
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
@@ -15,7 +17,7 @@ const ball = new Ball(10, '#0095DD', canvas.width / 2, canvas.height - 30, 2, -2
 const paddleHeight = 10;
 const paddleWidth = 75;
 const paddleXStart = (canvas.width - paddleWidth) / 2;
-const paddle = new Paddle(paddleXStart, canvas.height - paddleHeight, 'red', paddleWidth, paddleHeight); // Create a Paddle instance
+const paddle = new Paddle(paddleXStart, canvas.height - paddleHeight, 'red', paddleWidth, paddleHeight);
 
 let rightPressed = false;
 let leftPressed = false;
@@ -29,13 +31,12 @@ const brickOffsetTop = 30;
 const brickOffsetLeft = 20;
 
 const score = new Score(8, 20, '#0095DD', 0, '16px Arial');
-// let score = 0;
-let lives = 3;
+const lives = new Lives(canvas.width - 65, 20, '#0095DD', 3, '16px Arial');
 
 const bricks = [];
-for (let c = 0; c < brickColumnCount; c++) {
+for (let c = 0; c < brickColumnCount; c += 1) {
   bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r++) {
+  for (let r = 0; r < brickRowCount; r += 1) {
     const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
     const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
     bricks[c][r] = new Brick(brickX, brickY, brickWidth, brickHeight, '#0095DD', 1);
@@ -70,8 +71,8 @@ function mouseMoveHandler(e) {
 }
 
 function collisionDetection() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
+  for (let c = 0; c < brickColumnCount; c += 1) {
+    for (let r = 0; r < brickRowCount; r += 1) {
       const b = bricks[c][r];
       if (b.status === 1) {
         if (ball.x > b.x && ball.x < b.x + b.width && ball.y > b.y && ball.y < b.y + b.height) {
@@ -79,7 +80,6 @@ function collisionDetection() {
           b.status = 0;
           score.update(1);
           if (score.score === brickRowCount * brickColumnCount) {
-            // eslint-disable-next-line no-alert
             alert('YOU WIN, CONGRATULATIONS!');
             document.location.reload();
           }
@@ -89,21 +89,9 @@ function collisionDetection() {
   }
 }
 
-// function drawScore() {
-//   ctx.font = '16px Arial';
-//   ctx.fillStyle = '#0095DD';
-//   ctx.fillText(`Score: ${score}`, 8, 20);
-// }
-
-function drawLives() {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#0095DD';
-  ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
-}
-
 function drawBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
+  for (let c = 0; c < brickColumnCount; c += 1) {
+    for (let r = 0; r < brickRowCount; r += 1) {
       if (bricks[c][r].status === 1) {
         bricks[c][r].render(ctx);
       }
@@ -111,13 +99,18 @@ function drawBricks() {
   }
 }
 
+let gameOver = false;
 function draw() {
+  if (gameOver) {
+    return;
+  }
+
   background.draw(ctx, canvas.width, canvas.height);
   drawBricks();
   ball.render(ctx);
   paddle.draw(ctx);
   score.render(ctx);
-  drawLives();
+  lives.render(ctx);
   collisionDetection();
 
   if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
@@ -130,10 +123,13 @@ function draw() {
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
       ball.dy = -ball.dy;
     } else {
-      lives--;
-      if (!lives) {
+      lives.loseLife();
+      if (!lives.lives) {
         alert('GAME OVER');
-        document.location.reload();
+        gameOver = true;
+        setTimeout(() => {
+          document.location.reload();
+        }, 100);
       } else {
         ball.x = canvas.width / 2;
         ball.y = canvas.height - 30;
@@ -151,7 +147,9 @@ function draw() {
   }
 
   ball.move();
-  requestAnimationFrame(draw);
+  if (!gameOver) {
+    requestAnimationFrame(draw);
+  }
 }
 
 draw();
