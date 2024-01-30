@@ -43,10 +43,6 @@ for (let c = 0; c < brickColumnCount; c += 1) {
   }
 }
 
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
-document.addEventListener('mousemove', mouseMoveHandler, false);
-
 function keyDownHandler(e) {
   if (e.key === 'Right' || e.key === 'ArrowRight') {
     rightPressed = true;
@@ -69,6 +65,10 @@ function mouseMoveHandler(e) {
     paddle.x = relativeX - paddleWidth / 2;
   }
 }
+
+document.addEventListener('keydown', keyDownHandler, false);
+document.addEventListener('keyup', keyUpHandler, false);
+document.addEventListener('mousemove', mouseMoveHandler, false);
 
 function collisionDetection() {
   for (let c = 0; c < brickColumnCount; c += 1) {
