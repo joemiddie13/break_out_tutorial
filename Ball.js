@@ -1,23 +1,23 @@
-export default class Score {
-  constructor(x, y, color, score, font) {
+export default class Ball {
+  constructor(radius, color, x, y, dx, dy) {
+    this.radius = radius;
+    this.color = color;
     this.x = x;
     this.y = y;
-    this.color = color;
-    this.score = score;
-    this.font = font;
+    this.dx = dx;
+    this.dy = dy;
   }
 
   render(ctx) {
-    ctx.font = this.font;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = this.color;
-    ctx.fillText(`Score: ${this.score}`, this.x, this.y);
+    ctx.fill();
+    ctx.closePath();
   }
 
-  update(points) {
-    this.score += points;
-  }
-
-  reset() {
-    this.score = 0;
+  move() {
+    this.x += this.dx;
+    this.y += this.dy;
   }
 }

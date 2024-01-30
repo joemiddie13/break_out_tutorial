@@ -28,7 +28,8 @@ const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 20;
 
-let score = 0;
+const score = new Score(8, 20, '#0095DD', 0, '16px Arial');
+// let score = 0;
 let lives = 3;
 
 const bricks = [];
@@ -76,8 +77,9 @@ function collisionDetection() {
         if (ball.x > b.x && ball.x < b.x + b.width && ball.y > b.y && ball.y < b.y + b.height) {
           ball.dy = -ball.dy;
           b.status = 0;
-          score++;
-          if (score === brickRowCount * brickColumnCount) {
+          score.update(1);
+          if (score.score === brickRowCount * brickColumnCount) {
+            // eslint-disable-next-line no-alert
             alert('YOU WIN, CONGRATULATIONS!');
             document.location.reload();
           }
@@ -87,11 +89,11 @@ function collisionDetection() {
   }
 }
 
-function drawScore() {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#0095DD';
-  ctx.fillText(`Score: ${score}`, 8, 20);
-}
+// function drawScore() {
+//   ctx.font = '16px Arial';
+//   ctx.fillStyle = '#0095DD';
+//   ctx.fillText(`Score: ${score}`, 8, 20);
+// }
 
 function drawLives() {
   ctx.font = '16px Arial';
@@ -111,11 +113,10 @@ function drawBricks() {
 
 function draw() {
   background.draw(ctx, canvas.width, canvas.height);
-  // ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
   ball.render(ctx);
   paddle.draw(ctx);
-  drawScore();
+  score.render(ctx);
   drawLives();
   collisionDetection();
 
