@@ -3,6 +3,7 @@ import Ball from './Ball.js';
 import Brick from './Brick.js';
 import Paddle from './Paddle.js';
 import Background from './Background.js';
+import Score from './Score.js';
 
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');

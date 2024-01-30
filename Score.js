@@ -10,7 +10,7 @@ export default class Score {
   render(ctx) {
     ctx.font = this.font;
     ctx.fillStyle = this.color;
-    ctx.fillText(`Score: ${this.score}`, this.x, this.y);
+    this.ctx.fillText(`Score: ${this.score}`, this.x, this.y);
   }
 
   update(points) {
