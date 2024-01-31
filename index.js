@@ -1,3 +1,6 @@
+// Joseph Paul
+// ACS 1320 - Breakout OOP
+
 /* eslint-disable max-len */
 /* eslint-disable no-alert */
 /* eslint-disable import/extensions */
