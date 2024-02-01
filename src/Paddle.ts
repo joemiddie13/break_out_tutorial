@@ -1,4 +1,6 @@
 export default class Paddle {
+  x: any;
+  width: any;
   constructor(x, y, color, width, height) {
     this.x = x;
     this.y = y;

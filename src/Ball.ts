@@ -1,4 +1,10 @@
 export default class Ball {
+  x: any;
+  dx: any;
+  radius: number;
+  y: any;
+  dy: any;
+  dy: any;
   constructor(radius, color, x, y, dx, dy) {
     this.radius = radius;
     this.color = color;

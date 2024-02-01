@@ -4,15 +4,28 @@
 /* eslint-disable max-len */
 /* eslint-disable no-alert */
 /* eslint-disable import/extensions */
-import Ball from './Ball.js';
-import Brick from './Brick.js';
-import Paddle from './Paddle.js';
-import Background from './Background.js';
-import Score from './Score.js';
-import Lives from './Lives.js';
+import Ball from './Ball';
+import Brick from './Brick';
+import Paddle from './Paddle';
+import Background from './Background';
+import Score from './Score';
+import Lives from './Lives';
 
 class Game {
-  constructor(ctx, width, height) {
+  ctx: CanvasRenderingContext2D;
+  width: number;
+  height: number;
+  gameOver: boolean;
+  gameWon: boolean;
+  background: Background;
+  ball: Ball;
+  paddle: Paddle;
+  score: Score;
+  lives: Lives;
+  bricks: any[];
+  rightPressed: boolean;
+  leftPressed: boolean;
+  constructor(ctx: CanvasRenderingContext2D, width: number, height: number) {
     this.ctx = ctx;
     this.width = width;
     this.height = height;
@@ -157,7 +170,7 @@ class Game {
     this.ctx.canvas.addEventListener('click', () => document.location.reload(), { once: true });
   }
 
-  keyDownHandler(e) {
+  keyDownHandler(e: KeyboardEvent) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
       this.rightPressed = true;
     } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
@@ -165,7 +178,7 @@ class Game {
     }
   }
 
-  keyUpHandler(e) {
+  keyUpHandler(e: KeyboardEvent) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
       this.rightPressed = false;
     } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
@@ -173,7 +186,7 @@ class Game {
     }
   }
 
-  mouseMoveHandler(e) {
+  mouseMoveHandler(e: MouseEvent) {
     const relativeX = e.clientX - this.ctx.canvas.offsetLeft;
     if (relativeX > 0 && relativeX < this.width) {
       this.paddle.x = relativeX - this.paddle.width / 2;
@@ -197,7 +210,7 @@ class Game {
   }
 }
 
-const canvas = document.getElementById('myCanvas');
+const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d');
 const game = new Game(ctx, canvas.width, canvas.height);
 game.draw();

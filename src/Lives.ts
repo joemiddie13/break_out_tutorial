@@ -1,4 +1,5 @@
 export default class Lives {
+  lives: number;
   constructor(x, y, color, lives, font) {
     this.x = x;
     this.y = y;
